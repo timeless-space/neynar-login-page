@@ -1,0 +1,43 @@
+<html>
+
+<body>
+    <script async>
+        function handleMessage(event, authOrigin, successCallback) {
+            if (event.origin === authOrigin) {
+                successCallback(event.data);
+            }
+        }
+
+        function handleSignIn(
+            neynarLoginUrl,
+            clientId,
+            successCallback,
+        ) {
+            window.addEventListener(
+                "message",
+                function (event) {
+                    handleMessage(event, authOrigin, successCallback);
+                },
+            );
+
+            var authUrl = new URL(neynarLoginUrl);
+            authUrl.searchParams.append("client_id", clientId);
+            // authUrl.searchParams.append("redirect_uri", "timeless-x");
+
+            var authOrigin = new URL(neynarLoginUrl).origin;
+            window.location.href = authUrl.toString();
+        }
+        function onSignInSuccess(data) {
+            window.ReactNativeWebView.postMessage(data);
+        }
+        handleSignIn(
+            "https://app.neynar.com/login",
+            "06524200-10d3-46ad-9562-f116c3bdd37a",
+            onSignInSuccess,
+        );
+
+    </script>
+</body>
+
+</html>
+
